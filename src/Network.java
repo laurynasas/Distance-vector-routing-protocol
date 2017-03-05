@@ -34,21 +34,30 @@ public class Network {
             System.out.print("Something went wrong with file processing!! " + e);
         }
 
-        ArrayList<Node> all_nodes_in_array = new ArrayList<>(all_nodes.values());
-        do_exchange(all_nodes_in_array);
 
     }
 
-    public void do_exchange(ArrayList<Node> all_nodes){
-        for (Node receiver_node: all_nodes){
-            for (Node sender_node : all_nodes){
+    public void do_exchange(){
+        ArrayList<Node> all_nodes_in_array = new ArrayList<>(all_nodes.values());
+        for (Node receiver_node: all_nodes_in_array){
+            for (Node sender_node : all_nodes_in_array){
+
                 if (receiver_node != sender_node){
-                    int get_to_sender_cost = receiver_node.getRoutingTable()
-                    ArrayList<ArrayList<?>> routing_table = sender_node.getRoutingTable();
-                    receiver_node.receive_updates(routing_table);
+                    ArrayList<Row> senders_routing_table = sender_node.getRoutingTable();
+                    receiver_node.receive_updates(senders_routing_table, sender_node);
                 }
+
             }
         }
+    }
+
+    public String combine_all_routing_tables(){
+        StringBuffer table_set = new StringBuffer();
+        for (Node node: all_nodes.values()){
+            table_set.append(node.getRoutingTableString()+"\n");
+            table_set.append("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
+        }
+        return table_set.toString();
     }
 
     private ArrayList<Link> getLinks(String info, Node source) {

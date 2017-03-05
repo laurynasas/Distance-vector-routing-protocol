@@ -17,6 +17,9 @@ public class Link {
         return this.destination;
     }
 
+    public int getCost(){
+        return this.cost;
+    }
 
 
 }

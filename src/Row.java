@@ -3,12 +3,36 @@
  */
 public class Row {
     public Node destination;
-    public int distance;
+    public int cost;
     public Link outgoing_link;
 
-    public Row(Node destination, int distance, Link outgoing_link){
+    public Row(Node destination, int cost, Link outgoing_link){
         this.destination = destination;
-        this.distance = distance;
+        this.cost = cost;
         this.outgoing_link = outgoing_link;
+    }
+
+    public void setCost(int cost){
+        this.cost = cost;
+    }
+
+    public void setOutgoingLink(Link outgoing_link){
+        this.outgoing_link = outgoing_link;
+    }
+
+    public Node getDestination(){
+        return this.destination;
+    }
+
+    public int getCost(){
+        return this.cost;
+    }
+
+    public Link getOutgoingLink(){
+        return this.outgoing_link;
+    }
+    @Override
+    public String toString(){
+        return "| "+destination.getID()+" | "+cost+" | via: " + outgoing_link.destination.getID()+" |";
     }
 }

@@ -5,11 +5,13 @@ public class Row {
     public Node destination;
     public int cost;
     public Link outgoing_link;
+    public Node advertiser;
 
-    public Row(Node destination, int cost, Link outgoing_link){
+    public Row(Node destination, int cost, Link outgoing_link, Node advertiser){
         this.destination = destination;
         this.cost = cost;
         this.outgoing_link = outgoing_link;
+        this.advertiser = advertiser;
     }
 
     public void setCost(int cost){

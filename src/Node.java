@@ -23,9 +23,27 @@ public class Node {
 
     public void init_routing_table() {
         for (Link link_to_neigh : neighbours.values()) {
-            Row new_row = new Row(link_to_neigh.getDestination(), link_to_neigh.getCost(), link_to_neigh);
-            this.routing_table.add(new_row);
+            Row new_row = new Row(link_to_neigh.getDestination(), link_to_neigh.getCost(), link_to_neigh, this);
+            if (! get_all_destinations().contains(link_to_neigh.getDestination())) {
+                this.routing_table.add(new_row);
+            }
         }
+    }
+
+    public ArrayList<Node> get_all_destinations(){
+        ArrayList<Node> destinations = new ArrayList<>();
+        for (Row row:routing_table){
+            destinations.add(row.getDestination());
+        }
+        return destinations;
+    }
+
+    public void delete_rows_from_rt(ArrayList<Row> rows_to_delete){
+        routing_table.removeAll(rows_to_delete);
+    }
+
+    public void drop_routing_table(){
+        this.routing_table = new ArrayList<>();
     }
 
     public Link getLinkToNeighbour(Node destination) {
@@ -66,11 +84,14 @@ public class Node {
         }
         return null;
     }
-    public void update_routing_table_cost(int new_cost, Node destination){
+    public void update_routing_table_cost(int cost_diff, Node destination){
         for (Row local_row : this.routing_table) {
             if (local_row.outgoing_link.destination == destination) {
-                int cost_diff = new_cost-local_row.getCost();
+//                int cost_diff = new_cost-local_row.getCost();
+                System.out.println("before>"+local_row.toString());
+
                 local_row.setCost(local_row.getCost() + cost_diff);
+                System.out.println("after >"+local_row.toString());
             }
         }
     }
@@ -92,11 +113,18 @@ public class Node {
         }
     }
 
-    public void receive_updates(ArrayList<Row> received_routing_table, Node advertiser) {
+    public void receive_updates(ArrayList<Row> received_routing_table, Node advertiser, boolean splitHorizon) {
         for (Row received_row : received_routing_table) {
             Row local_row = getCorrespondingLocalRow(received_row);
             Row local_advertiser_row = getLocalRow(advertiser);
-
+            if (received_row.destination  == this){
+                continue;
+            }
+            if (splitHorizon){
+                if (received_row.advertiser == this){
+                    continue;
+                }
+            }
 
             if (local_advertiser_row != null && local_advertiser_row.getOutgoingLink().getStatus()) {
                 if (local_row != null) {
@@ -106,7 +134,7 @@ public class Node {
                     did_update = true;
                     int cost_to_advertiser = getLocalRow(advertiser).getCost();
                     Link outgoing_link_to_advertiser = getLocalRow(advertiser).getOutgoingLink();
-                    Row updated_new_row = new Row(received_row.getDestination(), received_row.getCost() + cost_to_advertiser, outgoing_link_to_advertiser);
+                    Row updated_new_row = new Row(received_row.getDestination(), received_row.getCost() + cost_to_advertiser, outgoing_link_to_advertiser, advertiser);
                     this.routing_table.add(updated_new_row);
                 }
             }

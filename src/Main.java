@@ -9,20 +9,21 @@ public class Main {
         boolean linkFail = false;
         boolean linkCostChange = false;
 
-        String sourceFail = "S";
-        String targetFail = "E";
+        String sourceFail = "A";
+        String targetFail = "B";
         int faileAfterIter = 0;
-        linkFail = true;
+        linkFail = false;
 
-        String sourceChange = "E";
-        String targetChange = "D";
+        String sourceChange = "D";
+        String targetChange = "A";
         int new_cost = 10;
         int changeAfterIter = 0;
         linkCostChange = true;
 
+        boolean splitHorizon = false;
 
         for (int i=0; i<iterations && !network.isStable();i++){
-            network.do_exchange();
+            network.do_exchange(splitHorizon);
             System.out.println(network.isStable());
             if (i ==faileAfterIter && linkFail){
                 Node source_node = network.all_nodes.get(sourceFail);
@@ -36,12 +37,20 @@ public class Main {
                 Node source_node = network.all_nodes.get(sourceChange);
                 Node target_node = network.all_nodes.get(targetChange);
                 Link link_neigh = source_node.getLinkToNeighbour(target_node);
+                int cost_diff = new_cost - link_neigh.getCost();
                 link_neigh.setCost(new_cost);
-                source_node.update_routing_table_cost(new_cost,target_node);
+                source_node.update_routing_table_cost(cost_diff,target_node);
+                source_node.drop_routing_table();
+                source_node.init_routing_table();
+//                source_node.tell_neighbours_to_delete_me_from_rt();
+                network.delete_this_node_if_outgoing(source_node);
+//                target_node.update_routing_table_cost(new_cost,);
                 network.makeInstable();
             }
+            System.out.println("----------#########----after iter "+i+"------###################--");
+            System.out.println(network.combine_all_routing_tables());
         }
-        System.out.println(network.combine_all_routing_tables());
+//        System.out.println(network.combine_all_routing_tables());
 
     }
 }

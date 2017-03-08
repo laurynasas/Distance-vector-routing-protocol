@@ -10,6 +10,7 @@ import java.util.Scanner;
 public class Network {
     public HashMap<String, Node> all_nodes = new HashMap<>();
     public boolean stable;
+
     public Network(String file_directory) {
         try {
             Scanner in = new Scanner(new FileReader(file_directory));
@@ -37,14 +38,31 @@ public class Network {
 
     }
 
-    public void do_exchange(){
+    public void delete_this_node_if_outgoing(Node to_delete) {
+        for (Node node : all_nodes.values()) {
+            ArrayList<Row> rows_to_delete = new ArrayList<>();
+            for (Row associated_node_row : node.getRoutingTable()) {
+                if (associated_node_row.getOutgoingLink().destination == to_delete) {
+                    rows_to_delete.add(associated_node_row);
+                }
+            }
+            if (rows_to_delete.size() != 0){
+                node.delete_rows_from_rt(rows_to_delete);
+                node.init_routing_table();
+            }
+
+        }
+    }
+
+
+    public void do_exchange(boolean splitHorizon) {
         ArrayList<Node> all_nodes_in_array = new ArrayList<>(all_nodes.values());
-        for (Node receiver_node: all_nodes_in_array){
-            for (Node sender_node : all_nodes_in_array){
-                if (receiver_node != sender_node){
+        for (Node receiver_node : all_nodes_in_array) {
+            for (Node sender_node : all_nodes_in_array) {
+                if (receiver_node != sender_node) {
                     receiver_node.set_did_update();
                     ArrayList<Row> senders_routing_table = sender_node.getRoutingTable();
-                    receiver_node.receive_updates(senders_routing_table, sender_node);
+                    receiver_node.receive_updates(senders_routing_table, sender_node, splitHorizon);
                 }
 
             }
@@ -52,28 +70,28 @@ public class Network {
         this.stable = checkStability();
     }
 
-    public boolean checkStability(){
+    public boolean checkStability() {
         ArrayList<Node> all_nodes_in_array = new ArrayList<>(all_nodes.values());
-        for (Node node : all_nodes_in_array){
-            if (node.did_update_routing_table()){
+        for (Node node : all_nodes_in_array) {
+            if (node.did_update_routing_table()) {
                 return false;
             }
         }
         return true;
     }
 
-    public boolean isStable(){
+    public boolean isStable() {
         return this.stable;
     }
 
-    public void makeInstable(){
+    public void makeInstable() {
         this.stable = false;
     }
 
-    public String combine_all_routing_tables(){
+    public String combine_all_routing_tables() {
         StringBuffer table_set = new StringBuffer();
-        for (Node node: all_nodes.values()){
-            table_set.append(node.getRoutingTableString()+"\n");
+        for (Node node : all_nodes.values()) {
+            table_set.append(node.getRoutingTableString() + "\n");
             table_set.append("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
         }
         return table_set.toString();

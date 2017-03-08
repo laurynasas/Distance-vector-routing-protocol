@@ -9,8 +9,6 @@ public class Node {
     private final String ID;
     public HashMap<Node, Link> neighbours = new HashMap<>();
     public ArrayList<Row> routing_table = new ArrayList<>();
-    public ArrayList<Node> destinations;
-    public ArrayList<Link> outgoing_links;
     public boolean did_update;
 
     public Node(String ID) {
@@ -49,19 +47,6 @@ public class Node {
         return this.routing_table;
     }
 
-//    public ArrayList<Node> getNeighbours(){
-//        return new ArrayList<>(neighbours.keySet());
-//    }
-//
-//    public ArrayList<Node> getActiveNeighbours(){
-//        ArrayList<Node> active_neighbours = new  ArrayList();
-//        for (Link link:neighbours.values()){
-//            if (link.active){
-//                active_neighbours.add(link.destination);
-//            }
-//        }
-//        return active_neighbours;
-//    }
 
     public Row getCorrespondingLocalRow(Row received_row) {
         Node destination = received_row.getDestination();
@@ -81,7 +66,14 @@ public class Node {
         }
         return null;
     }
-
+    public void update_routing_table_cost(int new_cost, Node destination){
+        for (Row local_row : this.routing_table) {
+            if (local_row.outgoing_link.destination == destination) {
+                int cost_diff = new_cost-local_row.getCost();
+                local_row.setCost(local_row.getCost() + cost_diff);
+            }
+        }
+    }
 
     public void update_routing_table(Row local_row, Row received_row, Node advertiser) {
         did_update = false;
@@ -142,13 +134,6 @@ public class Node {
 
     public void set_did_update() {
         this.did_update = false;
-    }
-
-    public void add_neighbour(Node new_neighbour, int cost) {
-        Link new_link = new Link(this, new_neighbour, cost);
-        if (!neighbours.keySet().contains(new_neighbour)) {
-            neighbours.put(new_neighbour, new_link);
-        }
     }
 
 

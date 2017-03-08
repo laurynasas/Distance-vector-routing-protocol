@@ -41,14 +41,24 @@ public class Network {
         ArrayList<Node> all_nodes_in_array = new ArrayList<>(all_nodes.values());
         for (Node receiver_node: all_nodes_in_array){
             for (Node sender_node : all_nodes_in_array){
-
                 if (receiver_node != sender_node){
+                    receiver_node.set_did_update();
                     ArrayList<Row> senders_routing_table = sender_node.getRoutingTable();
                     receiver_node.receive_updates(senders_routing_table, sender_node);
                 }
 
             }
         }
+    }
+
+    public boolean isStable(){
+        ArrayList<Node> all_nodes_in_array = new ArrayList<>(all_nodes.values());
+        for (Node node : all_nodes_in_array){
+            if (node.did_update_routing_table()){
+                return false;
+            }
+        }
+        return true;
     }
 
     public String combine_all_routing_tables(){

@@ -12,10 +12,11 @@ public class Node {
     public ArrayList<Row> routing_table = new ArrayList<>();
     public ArrayList<Node> destinations;
     public ArrayList<Link> outgoing_links;
-
+    public boolean did_update;
 
     public Node(String ID) {
         this.ID = ID;
+        this.did_update = true;
     }
 
     public String getID(){
@@ -76,10 +77,12 @@ public class Node {
 
 
     public void update_routing_table(Row local_row, Row received_row, Node advertiser){
+        did_update = false;
         int cost_to_advertiser = getLocalRow(advertiser).getCost();
         if (received_row.getCost() + cost_to_advertiser < local_row.getCost()){
             for (int i = 0; i<routing_table.size(); i++) {
                 if (routing_table.get(i) == local_row) {
+                    did_update = true;
                     Row updated_row = routing_table.get(i);
                     Link outgoing_link_to_advertiser = getLocalRow(advertiser).getOutgoingLink();
                     updated_row.setCost(received_row.getCost() + cost_to_advertiser);
@@ -98,6 +101,7 @@ public class Node {
                 update_routing_table(local_row, received_row, advertiser);
             } else if (local_row == null && local_advertiser_row != null){
 //              Add non existing new destination
+                did_update = true;
                 int cost_to_advertiser = getLocalRow(advertiser).getCost();
                 Link outgoing_link_to_advertiser = getLocalRow(advertiser).getOutgoingLink();
                 Row updated_new_row = new Row(received_row.getDestination(), received_row.getCost() + cost_to_advertiser, outgoing_link_to_advertiser);
@@ -116,6 +120,13 @@ public class Node {
             table.append("---------------------------------\n");
         }
         return table.toString();
+    }
+
+    public boolean did_update_routing_table(){
+        return this.did_update;
+    }
+    public void set_did_update(){
+        this.did_update = false;
     }
 
     public void add_neighbour(Node new_neighbour, int cost) {

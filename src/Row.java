@@ -31,8 +31,9 @@ public class Row {
     public Link getOutgoingLink(){
         return this.outgoing_link;
     }
+
     @Override
     public String toString(){
-        return "| "+destination.getID()+" | "+cost+" | via: " + outgoing_link.destination.getID()+" |";
+        return "| "+destination.getID()+" | "+cost+" | via: " + outgoing_link.destination.getID()+" | "+outgoing_link.active;
     }
 }

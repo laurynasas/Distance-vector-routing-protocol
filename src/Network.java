@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class Network {
     public HashMap<String, Node> all_nodes = new HashMap<>();
-
+    public boolean stable;
     public Network(String file_directory) {
         try {
             Scanner in = new Scanner(new FileReader(file_directory));
@@ -49,9 +49,10 @@ public class Network {
 
             }
         }
+        this.stable = checkStability();
     }
 
-    public boolean isStable(){
+    public boolean checkStability(){
         ArrayList<Node> all_nodes_in_array = new ArrayList<>(all_nodes.values());
         for (Node node : all_nodes_in_array){
             if (node.did_update_routing_table()){
@@ -59,6 +60,14 @@ public class Network {
             }
         }
         return true;
+    }
+
+    public boolean isStable(){
+        return this.stable;
+    }
+
+    public void makeInstable(){
+        this.stable = false;
     }
 
     public String combine_all_routing_tables(){

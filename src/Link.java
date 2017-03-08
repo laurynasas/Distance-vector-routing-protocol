@@ -7,19 +7,36 @@ public class Link {
     public Node source;
     public Node destination;
 
-    public Link(Node source, Node destination, int cost){
+    public Link(Node source, Node destination, int cost) {
         this.source = source;
         this.destination = destination;
         this.active = true;
         this.cost = cost;
     }
-    public Node getDestination(){
+
+    public Node getDestination() {
         return this.destination;
     }
 
-    public int getCost(){
+    public void disableLink() {
+        this.active = false;
+    }
+
+    public void enableLink() {
+        this.active = true;
+    }
+
+
+    public boolean getStatus(){
+        return this.active;
+    }
+
+    public int getCost() {
         return this.cost;
     }
 
+    public void setCost(int cost) {
+        this.cost = cost;
+    }
 
 }

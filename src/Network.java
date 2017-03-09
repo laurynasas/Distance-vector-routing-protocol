@@ -54,6 +54,19 @@ public class Network {
         }
     }
 
+    public String get_best_route(String start, String end){
+        Node start_node = all_nodes.get(start);
+        Node end_node = all_nodes.get(end);
+        StringBuffer path = new StringBuffer();
+        Node intermediate_node = start_node;
+        while (intermediate_node != end_node){
+            path.append(intermediate_node.getID()+" -> ");
+            intermediate_node = intermediate_node.getLocalRow(end_node).getOutgoingLink().getDestination();
+        }
+        path.append(intermediate_node.getID());
+        return path.toString();
+    }
+
 
     public void do_exchange(boolean splitHorizon) {
         ArrayList<Node> all_nodes_in_array = new ArrayList<>(all_nodes.values());

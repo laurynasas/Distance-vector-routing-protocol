@@ -51,6 +51,6 @@ public class Main {
             System.out.println(network.combine_all_routing_tables());
         }
 //        System.out.println(network.combine_all_routing_tables());
-
+        System.out.println(network.get_best_route("S","A"));
     }
 }

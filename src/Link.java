@@ -39,4 +39,8 @@ public class Link {
         this.cost = cost;
     }
 
+    public Node getSource(){
+        return this.source;
+    }
+
 }

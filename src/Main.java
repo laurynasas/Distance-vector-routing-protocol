@@ -5,7 +5,7 @@ public class Main {
     public static void main(String[] args){
         String dir = "/home/laurynas/workspace/ANC4/src/network_bigger.txt";
         Network network = new Network(dir);
-        int iterations = 5;
+        int iterations = 10;
         boolean linkFail = false;
         boolean linkCostChange = false;
 
@@ -17,7 +17,7 @@ public class Main {
         String sourceChange = "D";
         String targetChange = "A";
         int new_cost = 10;
-        int changeAfterIter = 0;
+        int changeAfterIter = 1;
         linkCostChange = true;
 
         boolean splitHorizon = false;
@@ -43,7 +43,8 @@ public class Main {
                 source_node.drop_routing_table();
                 source_node.init_routing_table();
 //                source_node.tell_neighbours_to_delete_me_from_rt();
-                network.delete_this_node_if_outgoing(source_node);
+//                network.delete_this_node_if_outgoing(source_node);
+//                network.send_all_nodes_notification();
 //                target_node.update_routing_table_cost(new_cost,);
                 network.makeInstable();
             }
@@ -51,6 +52,6 @@ public class Main {
             System.out.println(network.combine_all_routing_tables());
         }
 //        System.out.println(network.combine_all_routing_tables());
-        System.out.println(network.get_best_route("S","A"));
+        System.out.println(network.get_best_route("C","B"));
     }
 }

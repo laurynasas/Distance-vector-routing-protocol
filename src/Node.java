@@ -10,10 +10,12 @@ public class Node {
     public HashMap<Node, Link> neighbours = new HashMap<>();
     public ArrayList<Row> routing_table = new ArrayList<>();
     public boolean did_update;
+//    public boolean did_cost_change;
 
     public Node(String ID) {
         this.ID = ID;
         this.did_update = true;
+//        this.did_cost_change = false;
     }
 
     public String getID() {
@@ -96,12 +98,19 @@ public class Node {
         }
     }
 
+//    public void setCostChanged(){
+//        did_cost_change = true;
+//    }
+
     public void update_routing_table(Row local_row, Row received_row, Node advertiser) {
         did_update = false;
+        String name = this.getID();
         int cost_to_advertiser = getLocalRow(advertiser).getCost();
-        if (received_row.getCost() + cost_to_advertiser < local_row.getCost()) {
+        int total_new_cost = received_row.getCost() + cost_to_advertiser;
+        if (received_row.getCost() + cost_to_advertiser < local_row.getCost() || local_row.getOutgoingLink().getDestination() == advertiser) {
             for (int i = 0; i < routing_table.size(); i++) {
                 if (routing_table.get(i) == local_row) {
+//                    did_cost_change = false;
                     did_update = true;
                     Row updated_row = routing_table.get(i);
                     Link outgoing_link_to_advertiser = getLocalRow(advertiser).getOutgoingLink();

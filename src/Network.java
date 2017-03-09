@@ -54,6 +54,13 @@ public class Network {
         }
     }
 
+//    public void send_all_nodes_notification(){
+//        for (Node node : all_nodes.values()){
+//            node.setCostChanged();
+//        }
+//    }
+
+
     public String get_best_route(String start, String end){
         Node start_node = all_nodes.get(start);
         Node end_node = all_nodes.get(end);

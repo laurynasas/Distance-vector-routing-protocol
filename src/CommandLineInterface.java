@@ -18,6 +18,7 @@ public class CommandLineInterface {
         String file_directory = args[0];
 
         Network network = new Network(file_directory);
+        System.out.println("Please type in the command or to see all commands type 'help'");
 
         while (true) {
             String instruction = read_input.nextLine();
@@ -33,7 +34,7 @@ public class CommandLineInterface {
             }
 
             instruction = instructions[0];
-
+//            System.out.println("Please type in the command or to see all commands type 'help'");
             switch (instruction) {
                 case "set_max_iterations":
                     System.out.println("Please provide number of max iterations: ");
@@ -51,6 +52,10 @@ public class CommandLineInterface {
                 case "enable_split_horizon":
                     split_horizon = true;
                     System.out.println("Split horizon is successfully enabled");
+                    break;
+                case "disable_split_horizon":
+                    split_horizon = false;
+                    System.out.println("Split horizon is successfully disabled");
                     break;
                 case "change_link_cost":
                     System.out.println("Please provide source node ID: ");
@@ -78,7 +83,7 @@ public class CommandLineInterface {
                     boolean status = network.add_cost_change(source_change, target_change, change_cost_after, new_cost_int);
                     if (status) {
                         System.out.println("Succesfully added cost change");
-                    } else{
+                    } else {
                         System.out.println("The link does not exist or node IDS are incorrect!");
                     }
                     break;
@@ -144,6 +149,14 @@ public class CommandLineInterface {
                     System.out.println("Will be setting all params to default");
                     network = new Network(file_directory);
                     break;
+                case "exit":
+                    System.out.println("Thank you for using my software!");
+                    System.exit(0);
+                case "help":
+                    System.out.println("This is all possible commands:\n set_max_iterations - You will be able to set max iterations number\n " +
+                            "enable_split_horizon - enables split horizon\n disable_split_horizon - disables split horizon\n change_link_cost - changes links costs\n " +
+                            "make_link_fail - set the failing links\n print_best_route - set best routes to be printed\n get_routing_tables - set routing tables to be printed\n " +
+                            "exchange - run the exchange algorithm\n clean - resets parameters to default values\n exit - to exit program\n");
             }
 
 

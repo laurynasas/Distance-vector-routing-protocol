@@ -126,11 +126,18 @@ public class Node {
         for (Row received_row : received_routing_table) {
             Row local_row = getCorrespondingLocalRow(received_row);
             Row local_advertiser_row = getLocalRow(advertiser);
-            if (received_row.destination  == this){
-                continue;
-            }
+            String current_node = this.getID();
+            String advertiser_name = advertiser.getID();
+            String path = advertiser_name+" -> "+received_row.getDestination().getID() + " for " + received_row.getCost();
             if (splitHorizon){
-                if (received_row.advertiser == this){
+                Node portal_to_advertiser;
+                if (local_advertiser_row != null && received_row.advertiser == this){
+                    portal_to_advertiser = getLocalRow(received_row.advertiser).getOutgoingLink().getDestination();
+                } else{
+                    continue;
+                }
+
+                if (portal_to_advertiser == this || received_row.destination  == this){
                     continue;
                 }
             }
@@ -154,7 +161,7 @@ public class Node {
     public String getRoutingTableString() {
         StringBuffer table = new StringBuffer();
         table.append("             NODE " + this.ID + " ROUTING TABLE             \n");
-        table.append("| DESTINATION | COST | OUTGOING LINK | IS OUTGOING LINK ACTIVE\n");
+        table.append("| DESTINATION | COST | OUTGOING LINK | IS OUTGOING LINK ACTIVE | ADVERTISED BY\n");
         for (Row row : this.routing_table) {
             if (!row.outgoing_link.active) {
                 continue;

@@ -36,6 +36,6 @@ public class Row {
 
     @Override
     public String toString(){
-        return "| "+destination.getID()+" | "+cost+" | via: " + outgoing_link.destination.getID()+" | "+outgoing_link.active;
+        return "| "+destination.getID()+" | "+cost+" | via: " + outgoing_link.destination.getID()+" | "+outgoing_link.active + " | by "+advertiser.getID();
     }
 }

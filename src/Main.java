@@ -3,7 +3,7 @@
  */
 public class Main {
     public static void main(String[] args){
-        String dir = "/home/laurynas/workspace/ANC4/src/network_bigger.txt";
+        String dir = "/home/laurynas/workspace/ANC4/src/juniper_split_horizon.txt";
         Network network = new Network(dir);
         int iterations = 10;
         boolean linkFail = false;
@@ -18,7 +18,7 @@ public class Main {
         String targetChange = "A";
         int new_cost = 10;
         int changeAfterIter = 1;
-        linkCostChange = true;
+        linkCostChange = false;
 
         boolean splitHorizon = false;
 
@@ -52,6 +52,6 @@ public class Main {
             System.out.println(network.combine_all_routing_tables());
         }
 //        System.out.println(network.combine_all_routing_tables());
-        System.out.println(network.get_best_route("C","B"));
+//        System.out.println(network.get_best_route("C","B"));
     }
 }

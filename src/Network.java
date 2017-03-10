@@ -83,11 +83,11 @@ public class Network {
     public boolean add_cost_change(String s, String t, int iteration, int new_cost) {
         Node source = all_nodes.get(s);
         Node target = all_nodes.get(t);
-        if (source == null || target == null){
+        if (source == null || target == null) {
             return false;
         }
         Link changing_link = find_link(source, target);
-        if (changing_link == null){
+        if (changing_link == null) {
             return false;
         }
         HashMap<Link, Integer> all_links;
@@ -259,7 +259,9 @@ public class Network {
             }
 
             Link new_link = new Link(source, destination, cost);
-            outgoing_links.add(new_link);
+            if (source != destination) {
+                outgoing_links.add(new_link);
+            }
         }
         return outgoing_links;
     }

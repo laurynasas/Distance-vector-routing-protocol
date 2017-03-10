@@ -3,7 +3,7 @@
  */
 public class Main {
     public static void main(String[] args){
-        String dir = "/home/laurynas/workspace/ANC4/src/juniper_split_horizon.txt";
+        String dir = "/home/laurynas/workspace/ANC4/src/network_bigger.txt";
         Network network = new Network(dir);
         int iterations = 10;
         boolean linkFail = false;
@@ -13,6 +13,8 @@ public class Main {
         String targetFail = "B";
         int faileAfterIter = 0;
         linkFail = false;
+        String sourceFail2 = "B";
+        String targetFail2 = "A";
 
         String sourceChange = "D";
         String targetChange = "A";
@@ -20,7 +22,7 @@ public class Main {
         int changeAfterIter = 1;
         linkCostChange = false;
 
-        boolean splitHorizon = false;
+        boolean splitHorizon = true;
 
         for (int i=0; i<iterations && !network.isStable();i++){
             network.do_exchange(splitHorizon);
@@ -30,6 +32,13 @@ public class Main {
                 Node target_node = network.all_nodes.get(targetFail);
                 Link link_neigh = source_node.getLinkToNeighbour(target_node);
                 link_neigh.disableLink();
+
+                Node source_node2 = network.all_nodes.get(sourceFail2);
+                Node target_node2 = network.all_nodes.get(targetFail2);
+                Link link_neigh2 = source_node2.getLinkToNeighbour(target_node2);
+                link_neigh2.disableLink();
+
+
                 network.makeInstable();
             }
 

@@ -107,11 +107,13 @@ public class Node {
         String name = this.getID();
         int cost_to_advertiser = getLocalRow(advertiser).getCost();
         int total_new_cost = received_row.getCost() + cost_to_advertiser;
-        if (received_row.getCost() + cost_to_advertiser < local_row.getCost() || local_row.getOutgoingLink().getDestination() == advertiser) {
+        if (received_row.getCost() + cost_to_advertiser < local_row.getCost() || local_row.getOutgoingLink().getDestination() == advertiser || !local_row.getOutgoingLink().active) {
             for (int i = 0; i < routing_table.size(); i++) {
                 if (routing_table.get(i) == local_row) {
 //                    did_cost_change = false;
-                    did_update = true;
+                    if (received_row.getCost() + cost_to_advertiser != local_row.getCost()) {
+                        did_update = true;
+                    }
                     Row updated_row = routing_table.get(i);
                     Link outgoing_link_to_advertiser = getLocalRow(advertiser).getOutgoingLink();
                     updated_row.setCost(received_row.getCost() + cost_to_advertiser);
@@ -129,15 +131,41 @@ public class Node {
             String current_node = this.getID();
             String advertiser_name = advertiser.getID();
             String path = advertiser_name+" -> "+received_row.getDestination().getID() + " for " + received_row.getCost();
+
+            if (received_row.destination  == this){
+                continue;
+            }
+
             if (splitHorizon){
                 Node portal_to_advertiser;
-                if (local_advertiser_row != null && received_row.advertiser == this){
-                    portal_to_advertiser = getLocalRow(received_row.advertiser).getOutgoingLink().getDestination();
+                Node learning_portal = null;
+                Node advertising_destination_was_learned_from = received_row.advertiser;
+                Row direction_learning_portal_row = advertiser.getLocalRow(advertising_destination_was_learned_from);
+
+                Row trying_to_send_direction_row = advertiser.getLocalRow(this);
+                Node trying_to_send_portal = null;
+
+
+                if (direction_learning_portal_row != null){
+                    learning_portal = direction_learning_portal_row.getOutgoingLink().getDestination();
                 } else{
                     continue;
                 }
 
-                if (portal_to_advertiser == this || received_row.destination  == this){
+
+                if (trying_to_send_direction_row != null){
+                    trying_to_send_portal = trying_to_send_direction_row.getOutgoingLink().getDestination();
+                } else{
+                    continue;
+                }
+
+//                if (local_advertiser_row != null && received_row.advertiser == this){
+//                    portal_to_advertiser = getLocalRow(advertiser).getOutgoingLink().getDestination();
+//                } else{
+//                    continue;
+//                }
+
+                if (trying_to_send_portal ==learning_portal){
                     continue;
                 }
             }

@@ -3,6 +3,7 @@ import java.util.Scanner;
 
 /**
  * Created by laurynas on 3/9/17.
+ * Please refer to manual for usage instructions
  */
 public class CommandLineInterface {
 
@@ -34,7 +35,6 @@ public class CommandLineInterface {
             }
 
             instruction = instructions[0];
-//            System.out.println("Please type in the command or to see all commands type 'help'");
             switch (instruction) {
                 case "set_max_iterations":
                     System.out.println("Please provide number of max iterations: ");

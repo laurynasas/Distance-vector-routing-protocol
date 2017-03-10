@@ -1,5 +1,6 @@
 /**
  * Created by laurynas on 3/3/17.
+ * Simple class used to encapsulate routing table's row
  */
 public class Row {
     public Node destination;

@@ -19,12 +19,14 @@ public class Main {
         String sourceChange = "D";
         String targetChange = "A";
         int new_cost = 10;
-        int changeAfterIter = 1;
+        int changeAfterIter = 0;
         linkCostChange = false;
 
         boolean splitHorizon = true;
 
         for (int i=0; i<iterations && !network.isStable();i++){
+            System.out.println("----------#########----before iter "+(i+1)+"------###################--");
+            System.out.println(network.combine_all_routing_tables());
             network.do_exchange(splitHorizon);
             System.out.println(network.isStable());
             if (i ==faileAfterIter && linkFail){
@@ -59,9 +61,9 @@ public class Main {
 //                target_node.update_routing_table_cost(new_cost,);
                 network.makeInstable();
             }
-            System.out.println("----------#########----after iter "+i+"------###################--");
-            System.out.println(network.combine_all_routing_tables());
         }
+        System.out.println("----------#########----final"+"------###################--");
+        System.out.println(network.combine_all_routing_tables());
 //        System.out.println(network.combine_all_routing_tables());
 //        System.out.println(network.get_best_route("C","B"));
     }

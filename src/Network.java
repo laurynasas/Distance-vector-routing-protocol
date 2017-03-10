@@ -19,8 +19,9 @@ public class Network {
 
     public HashMap<Integer, HashMap<Link, Integer>> cost_changes = new HashMap<>();
 
-
+    //  Will be parsing the input text file with network information
     public Network(String file_directory) {
+
         try {
             Scanner in = new Scanner(new FileReader(file_directory));
             while (in.hasNext()) {
@@ -43,14 +44,14 @@ public class Network {
         } catch (Exception e) {
             System.out.print("Something went wrong with file processing!! " + e);
         }
-
-
     }
+
 
     public Link find_link(Node source, Node target) {
         return source.neighbours.get(target);
     }
 
+    //    Add failing link given in CLI to failin links list
     public void add_failing_link(String s, String t, int iteration) {
         Node source = all_nodes.get(s);
         Node target = all_nodes.get(t);
@@ -67,6 +68,7 @@ public class Network {
         }
     }
 
+    //    Add best route given by CLI which will have to be printed later
     public void add_get_best_routes(String start, String end, int iteration) {
         HashMap<String, String> all_routes;
         all_routes = best_routes.get(iteration);
@@ -80,6 +82,7 @@ public class Network {
         }
     }
 
+    //    Add the cost change which will have to be applied later on during the exchange
     public boolean add_cost_change(String s, String t, int iteration, int new_cost) {
         Node source = all_nodes.get(s);
         Node target = all_nodes.get(t);
@@ -103,35 +106,13 @@ public class Network {
         return true;
     }
 
+    //  Prepare for routing tables printing
     public void set_routing_table_printout(String[] ids, ArrayList<Integer> iter_indeces) {
         rt_printout_nodes = new ArrayList<>(Arrays.asList(ids));
         rt_printout_iter = iter_indeces;
     }
 
-
-    public void delete_this_node_if_outgoing(Node to_delete) {
-        for (Node node : all_nodes.values()) {
-            ArrayList<Row> rows_to_delete = new ArrayList<>();
-            for (Row associated_node_row : node.getRoutingTable()) {
-                if (associated_node_row.getOutgoingLink().destination == to_delete) {
-                    rows_to_delete.add(associated_node_row);
-                }
-            }
-            if (rows_to_delete.size() != 0) {
-                node.delete_rows_from_rt(rows_to_delete);
-                node.init_routing_table();
-            }
-
-        }
-    }
-
-//    public void send_all_nodes_notification(){
-//        for (Node node : all_nodes.values()){
-//            node.setCostChanged();
-//        }
-//    }
-
-
+    //    Performs the exchange with given parameteres
     public void perform_exchange(boolean split_horizon) {
         StringBuffer all_tables = new StringBuffer();
         StringBuffer all_best_routes = new StringBuffer();
@@ -158,11 +139,11 @@ public class Network {
                     this.makeInstable();
                 }
             }
-
+//          Set up routing table printing
             if (rt_printout_iter.contains(i)) {
                 all_tables.append("----------ITERATION " + i + " -----------\n" + combine_set_of_routing_tables(rt_printout_nodes) + "\n");
             }
-
+//          Set up best routes printing
             if (best_routes.get(i) != null) {
                 for (String start : best_routes.get(i).keySet()) {
                     all_best_routes.append("----------ITERATION " + i + " -----------\n" + get_best_route(start, best_routes.get(i).get(start)) + "\n");
@@ -189,7 +170,7 @@ public class Network {
         return path.toString();
     }
 
-
+    // Iterates through nodes and sends routing tables to all other nodes
     public void do_exchange(boolean splitHorizon) {
         ArrayList<Node> all_nodes_in_array = new ArrayList<>(all_nodes.values());
         for (Node receiver_node : all_nodes_in_array) {
@@ -205,6 +186,7 @@ public class Network {
         this.stable = checkStability();
     }
 
+    // Checks if network has converged
     public boolean checkStability() {
         ArrayList<Node> all_nodes_in_array = new ArrayList<>(all_nodes.values());
         for (Node node : all_nodes_in_array) {
@@ -223,6 +205,7 @@ public class Network {
         this.stable = false;
     }
 
+    //  Combines all routing tables in one
     public String combine_all_routing_tables() {
         StringBuffer table_set = new StringBuffer();
         for (Node node : all_nodes.values()) {
@@ -232,6 +215,7 @@ public class Network {
         return table_set.toString();
     }
 
+    //    Combines specified set of routing tables into one output
     public String combine_set_of_routing_tables(ArrayList<String> set) {
         StringBuffer table_set = new StringBuffer();
         for (String nodeID : set) {
@@ -242,6 +226,7 @@ public class Network {
         return table_set.toString();
     }
 
+    //  Get links from the text files and assigns them to nodes
     public void setMaxIters(int max) {
         this.maxIters = max;
     }

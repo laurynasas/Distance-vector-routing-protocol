@@ -1,5 +1,6 @@
 /**
  * Created by laurynas on 3/3/17.
+ * Link class encapsulates the link between nodes information
  */
 public class Link {
     public boolean active;

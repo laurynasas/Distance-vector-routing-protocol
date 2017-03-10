@@ -141,6 +141,8 @@ public class Network {
             if (failing_links.get(i) != null) {
                 for (Link failing_link : failing_links.get(i)) {
                     failing_link.disableLink();
+                    failing_link.getSource().drop_routing_table();
+                    failing_link.getSource().init_routing_table();
                     this.makeInstable();
                 }
             }

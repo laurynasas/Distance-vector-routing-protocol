@@ -3,18 +3,18 @@
  */
 public class Main {
     public static void main(String[] args){
-        String dir = "/home/laurynas/workspace/ANC4/src/network_bigger.txt";
+        String dir = "/home/laurynas/workspace/ANC4/src/juniper_split_horizon.txt";
         Network network = new Network(dir);
         int iterations = 10;
         boolean linkFail = false;
         boolean linkCostChange = false;
 
-        String sourceFail = "A";
-        String targetFail = "B";
+        String sourceFail = "B";
+        String targetFail = "A";
         int faileAfterIter = 0;
-        linkFail = false;
-        String sourceFail2 = "B";
-        String targetFail2 = "A";
+        linkFail = true;
+        String sourceFail2 = "A";
+        String targetFail2 = "B";
 
         String sourceChange = "D";
         String targetChange = "A";
@@ -31,6 +31,8 @@ public class Main {
                 Node source_node = network.all_nodes.get(sourceFail);
                 Node target_node = network.all_nodes.get(targetFail);
                 Link link_neigh = source_node.getLinkToNeighbour(target_node);
+                source_node.drop_routing_table();
+                source_node.init_routing_table();
                 link_neigh.disableLink();
 
                 Node source_node2 = network.all_nodes.get(sourceFail2);

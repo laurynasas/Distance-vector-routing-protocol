@@ -26,25 +26,25 @@ public class Node {
     public void init_routing_table() {
         for (Link link_to_neigh : neighbours.values()) {
             Row new_row = new Row(link_to_neigh.getDestination(), link_to_neigh.getCost(), link_to_neigh, this);
-            if (! get_all_destinations().contains(link_to_neigh.getDestination())) {
+            if (!get_all_destinations().contains(link_to_neigh.getDestination())) {
                 this.routing_table.add(new_row);
             }
         }
     }
 
-    public ArrayList<Node> get_all_destinations(){
+    public ArrayList<Node> get_all_destinations() {
         ArrayList<Node> destinations = new ArrayList<>();
-        for (Row row:routing_table){
+        for (Row row : routing_table) {
             destinations.add(row.getDestination());
         }
         return destinations;
     }
 
-    public void delete_rows_from_rt(ArrayList<Row> rows_to_delete){
+    public void delete_rows_from_rt(ArrayList<Row> rows_to_delete) {
         routing_table.removeAll(rows_to_delete);
     }
 
-    public void drop_routing_table(){
+    public void drop_routing_table() {
         this.routing_table = new ArrayList<>();
     }
 
@@ -86,14 +86,15 @@ public class Node {
         }
         return null;
     }
-    public void update_routing_table_cost(int cost_diff, Node destination){
+
+    public void update_routing_table_cost(int cost_diff, Node destination) {
         for (Row local_row : this.routing_table) {
             if (local_row.outgoing_link.destination == destination) {
 //                int cost_diff = new_cost-local_row.getCost();
-                System.out.println("before>"+local_row.toString());
+                System.out.println("before>" + local_row.toString());
 
                 local_row.setCost(local_row.getCost() + cost_diff);
-                System.out.println("after >"+local_row.toString());
+                System.out.println("after >" + local_row.toString());
             }
         }
     }
@@ -130,13 +131,13 @@ public class Node {
             Row local_advertiser_row = getLocalRow(advertiser);
             String current_node = this.getID();
             String advertiser_name = advertiser.getID();
-            String path = advertiser_name+" -> "+received_row.getDestination().getID() + " for " + received_row.getCost();
+            String path = advertiser_name + " -> " + received_row.getDestination().getID() + " for " + received_row.getCost();
 
-            if (received_row.destination  == this){
+            if (received_row.destination == this) {
                 continue;
             }
 
-            if (splitHorizon){
+            if (splitHorizon) {
                 Node portal_to_advertiser;
                 Node learning_portal = null;
                 Node advertising_destination_was_learned_from = received_row.advertiser;
@@ -146,18 +147,19 @@ public class Node {
                 Node trying_to_send_portal = null;
 
 
-                if (direction_learning_portal_row != null){
+                if (direction_learning_portal_row != null && trying_to_send_direction_row != null) {
                     learning_portal = direction_learning_portal_row.getOutgoingLink().getDestination();
-                } else{
-                    continue;
-                }
-
-
-                if (trying_to_send_direction_row != null){
                     trying_to_send_portal = trying_to_send_direction_row.getOutgoingLink().getDestination();
-                } else{
-                    continue;
+
+
+                    if (trying_to_send_portal == learning_portal) {
+                        continue;
+                    }
+
                 }
+
+            }
+
 
 //                if (local_advertiser_row != null && received_row.advertiser == this){
 //                    portal_to_advertiser = getLocalRow(advertiser).getOutgoingLink().getDestination();
@@ -165,26 +167,22 @@ public class Node {
 //                    continue;
 //                }
 
-                if (trying_to_send_portal ==learning_portal){
-                    continue;
-                }
-            }
 
-            if (local_advertiser_row != null && local_advertiser_row.getOutgoingLink().getStatus()) {
-                if (local_row != null) {
-                    update_routing_table(local_row, received_row, advertiser);
-                } else if (local_row == null) {
+        if (local_advertiser_row != null && local_advertiser_row.getOutgoingLink().getStatus()) {
+            if (local_row != null) {
+                update_routing_table(local_row, received_row, advertiser);
+            } else if (local_row == null) {
 //              Add non existing new destination
-                    did_update = true;
-                    int cost_to_advertiser = getLocalRow(advertiser).getCost();
-                    Link outgoing_link_to_advertiser = getLocalRow(advertiser).getOutgoingLink();
-                    Row updated_new_row = new Row(received_row.getDestination(), received_row.getCost() + cost_to_advertiser, outgoing_link_to_advertiser, advertiser);
-                    this.routing_table.add(updated_new_row);
-                }
+                did_update = true;
+                int cost_to_advertiser = getLocalRow(advertiser).getCost();
+                Link outgoing_link_to_advertiser = getLocalRow(advertiser).getOutgoingLink();
+                Row updated_new_row = new Row(received_row.getDestination(), received_row.getCost() + cost_to_advertiser, outgoing_link_to_advertiser, advertiser);
+                this.routing_table.add(updated_new_row);
             }
         }
-
     }
+
+}
 
     public String getRoutingTableString() {
         StringBuffer table = new StringBuffer();
